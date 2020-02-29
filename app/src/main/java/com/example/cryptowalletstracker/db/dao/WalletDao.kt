@@ -1,6 +1,5 @@
 package com.example.cryptowalletstracker.db.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
@@ -12,7 +11,7 @@ import com.example.cryptowalletstracker.db.entities.Wallet
 interface WalletDao {
     //"SELECT * FROM walletTable"
     @Query("SELECT * FROM walletTable")
-    fun getAllWallets(): LiveData<List<Wallet?>?>?
+    fun getAllWallets(): Array<Wallet>
 
     @Insert(onConflict = REPLACE)
     fun insertWallets(wallets: Wallet): Long

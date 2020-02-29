@@ -5,11 +5,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitBuilder {
 
-    fun getRetrofit(baseURL: String) : Retrofit
+    fun getRetrofit(baseURL: String): WalletService
     {
         return Retrofit.Builder()
             .baseUrl(baseURL)
             .addConverterFactory(GsonConverterFactory.create())
-            .build()
+            .build().create(WalletService::class.java)
     }
 }

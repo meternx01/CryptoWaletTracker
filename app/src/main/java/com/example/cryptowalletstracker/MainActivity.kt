@@ -1,24 +1,54 @@
 package com.example.cryptowalletstracker
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.example.cryptowalletstracker.db.WalletDatabase
+import com.example.cryptowalletstracker.ui.WalletViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var viewModel: WalletViewModel
+    private var walletDatabase: WalletDatabase? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        createDbInstance()
+        viewModel = ViewModelProvider(this)[WalletViewModel::class.java]
+
+        viewModel.wallets.observe(this, Observer {
+            if (it.isNotEmpty()) {
+                balanceText.text = it[0].amount
+            }
+        })
+        fab.setOnClickListener {
+            if (walletDatabase != null) {
+                val database = walletDatabase
+                viewModel.addWallet(database)
+            }
+
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        destroyDbInstance()
+    }
+
+    private fun destroyDbInstance() {
+        WalletDatabase.destroyInstance()
+    }
+
+    private fun createDbInstance() {
+        walletDatabase = WalletDatabase.getInstance(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -36,4 +66,6 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 }

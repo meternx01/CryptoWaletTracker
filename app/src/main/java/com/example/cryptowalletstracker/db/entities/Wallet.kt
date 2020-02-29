@@ -21,20 +21,20 @@ class Wallet(
     var spent: String,
 
     @ColumnInfo(name = "received")
-    var recieved: String,
+    var received: String,
 
     @ColumnInfo(name = "date")
-    var date: String
+    var date: Long
 ) {
-    constructor() : this("", "", "", "", "", "")
+    constructor() : this("", "", "", "", "", 0)
 
     fun getWalletFromBalance(balance: Balance): Wallet {
         this.address = balance.payload.address
-        //this.coin = balance.payload.coin
+        this.coin = balance.coin
         this.amount = balance.payload.balance
         this.spent = balance.payload.totalSpent
-        this.recieved = balance.payload.totalReceived
-//        this.date = getCurrentTimeMillis()
+        this.received = balance.payload.totalReceived
+        this.date = System.currentTimeMillis()
         return this
     }
 }
