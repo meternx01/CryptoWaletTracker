@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 by Jason McKinney.
+ */
+
 package com.example.cryptowalletstracker
 
 import android.os.Bundle
@@ -6,13 +10,17 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cryptowalletstracker.db.WalletDatabase
+import com.example.cryptowalletstracker.ui.CustomAdapter
 import com.example.cryptowalletstracker.ui.WalletViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    var adapter: CustomAdapter? = null
     lateinit var viewModel: WalletViewModel
     private var walletDatabase: WalletDatabase? = null
 
@@ -21,14 +29,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        linearLayoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = linearLayoutManager
+
+        adapter = CustomAdapter(this)
+        recyclerView.adapter = adapter
+
         createDbInstance()
         viewModel = ViewModelProvider(this)[WalletViewModel::class.java]
 
         viewModel.wallets.observe(this, Observer {
-            if (it.isNotEmpty()) {
-                balanceText.text = it[0].amount
-            }
+            adapter?.wallets = it
         })
+        viewModel.initViewModel(walletDatabase)
+
         fab.setOnClickListener {
             if (walletDatabase != null) {
                 val database = walletDatabase

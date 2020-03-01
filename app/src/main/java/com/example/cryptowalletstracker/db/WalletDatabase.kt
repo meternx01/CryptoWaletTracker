@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 by Jason McKinney.
+ */
+
 package com.example.cryptowalletstracker.db
 
 import android.content.Context
@@ -8,7 +12,7 @@ import com.example.cryptowalletstracker.db.dao.WalletDao
 import com.example.cryptowalletstracker.db.entities.Wallet
 
 
-@Database(entities = [Wallet::class], version = 1)
+@Database(entities = [Wallet::class], version = 1, exportSchema = false)
 abstract class WalletDatabase : RoomDatabase() {
 
     abstract fun walletDao(): WalletDao

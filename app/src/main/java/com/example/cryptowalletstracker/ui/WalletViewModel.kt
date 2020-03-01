@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 by Jason McKinney.
+ */
+
 package com.example.cryptowalletstracker.ui
 
 import androidx.lifecycle.MutableLiveData
@@ -22,7 +26,7 @@ class WalletViewModel : ViewModel() {
     fun addWallet(walletDatabase: WalletDatabase?) {
         CoroutineScope(Dispatchers.IO).launch {
             Timber.d("CoroutineScope: entered")
-            val payload = WalletOps().retrieveBalance()
+            val payload = WalletOps().retrieveBalance("doge", "DPdHJchjuYNxvEi2vhv2XLtKRzNKADq3zc")
             Timber.d("CoroutineScope: $payload")
             var wallet = Wallet()
             wallet = wallet.getWalletFromBalance(payload)
@@ -32,5 +36,15 @@ class WalletViewModel : ViewModel() {
                 wallets.value = allWallets
             }
         }
+    }
+
+    fun initViewModel(walletDatabase: WalletDatabase?) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val allWallets = walletDatabase?.walletDao()?.getAllWallets()
+            withContext(Dispatchers.Main) {
+                wallets.value = allWallets
+            }
+        }
+
     }
 }

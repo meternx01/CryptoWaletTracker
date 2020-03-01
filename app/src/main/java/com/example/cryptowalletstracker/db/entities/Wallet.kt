@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 by Jason McKinney.
+ */
+
 package com.example.cryptowalletstracker.db.entities
 
 import androidx.room.ColumnInfo
@@ -15,7 +19,7 @@ class Wallet(
     var coin: String,
 
     @ColumnInfo(name = "amount")
-    var amount: String,
+    var amount: Double,
 
     @ColumnInfo(name = "spent")
     var spent: String,
@@ -26,12 +30,12 @@ class Wallet(
     @ColumnInfo(name = "date")
     var date: Long
 ) {
-    constructor() : this("", "", "", "", "", 0)
+    constructor() : this("", "", 0.0, "", "", 0)
 
     fun getWalletFromBalance(balance: Balance): Wallet {
         this.address = balance.payload.address
         this.coin = balance.coin
-        this.amount = balance.payload.balance
+        this.amount = balance.payload.balance.toDouble()
         this.spent = balance.payload.totalSpent
         this.received = balance.payload.totalReceived
         this.date = System.currentTimeMillis()

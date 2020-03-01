@@ -1,6 +1,13 @@
+<!--
+  ~ Copyright (c) 2020 by Jason McKinney.
+  -->
+
 <resources>
     <string name="app_name">CryptoWalletsTracker</string>
     <string name="action_settings">Settings</string>
     <string name="gtfo">GTFO</string>
     <string name="txt_balance">Balance!!</string>
+    <string name="coin_logo">Coin Logo</string>
+    <string name="dogecoin">Dogecoin</string>
+    <string name="bitcoin">Bitcoin</string>
 </resources>

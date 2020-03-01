@@ -1,0 +1,19 @@
+<!--
+  ~ Copyright (c) 2020 by Jason McKinney.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <path
+        android:fillColor="#F8BF1A"
+        android:pathData="M32.6044,21L28,21L28,30.0957L35.2424,30.0957L35.2424,33.9042L28,33.9042L28,42.9999L32.8276,42.9999C34.0683,42.9999 43.0136,43.1403 43,32.4171C42.9864,21.6944 34.3252,21 32.6044,21L32.6044,21Z"
+        android:strokeColor="#00000000" />
+    <path
+        android:fillColor="#F8BF1A"
+        android:fillType="evenOdd"
+        android:pathData="M0,31.9999C0,14.3268 14.3269,0 32.0003,0C49.6731,0 64,14.3268 64,31.9999C64,49.6732 49.6731,64 32.0003,64C14.3269,64 0,49.6732 0,31.9999ZM21.6683,49.2831L33.2577,49.2831C33.2577,49.2831 49.5523,50.6486 49.5523,32.2779C49.5523,14.6194 34.6724,14.682 31.7963,14.6941C31.729,14.6944 31.6682,14.6947 31.6144,14.6947L21.6681,14.6947L21.6681,30.1023L17.5833,30.1023L17.5833,33.8763L21.6683,33.8763L21.6683,49.2831Z"
+        android:strokeColor="#00000000" />
+</vector>
