@@ -5,6 +5,7 @@
 package com.example.cryptowalletstracker.ui
 
 import android.content.Context
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,9 @@ import com.example.cryptowalletstracker.R
 import com.example.cryptowalletstracker.db.entities.Wallet
 import kotlinx.android.synthetic.main.layout_wallet_card.view.*
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class CustomAdapter(context: Context) : RecyclerView.Adapter<CustomAdapter.CustomViewHolder>() {
 
@@ -49,6 +53,8 @@ class CustomAdapter(context: Context) : RecyclerView.Adapter<CustomAdapter.Custo
         private val coinLogo = view.coin_image
         private val coinName = view.coin_name
         private val amount = view.amount_text
+        private val address = view.address
+        private val timeUpdated = view.timeUpdated
 
         fun bind(wallet: Wallet) {
             when (wallet.coin) {
@@ -66,8 +72,14 @@ class CustomAdapter(context: Context) : RecyclerView.Adapter<CustomAdapter.Custo
 
                 }
             }
-            val formatter = DecimalFormat("#,##0.################")
-            amount.text = formatter.format(wallet.amount)
+            amount.text = DecimalFormat("#,##0.################").format(wallet.amount)
+            timeUpdated.text =
+                SimpleDateFormat(
+                    "MMM dd,yyyy HH:mm",
+                    Resources.getSystem().configuration.locales[0]
+                ).format(Date(wallet.date))
+            address.text = wallet.address
+
         }
     }
 }

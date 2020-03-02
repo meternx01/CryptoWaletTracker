@@ -10,4 +10,5 @@
     <string name="coin_logo">Coin Logo</string>
     <string name="dogecoin">Dogecoin</string>
     <string name="bitcoin">Bitcoin</string>
+    <string name="action_refresh">Refresh</string>
 </resources>

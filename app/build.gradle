@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 by Jason McKinney.
+ */
+
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
@@ -67,6 +71,8 @@ dependencies {
     implementation 'androidx.room:room-ktx:2.2.4'
     implementation 'com.jakewharton.timber:timber:4.7.1'
     kapt 'androidx.room:room-compiler:2.2.4'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha03'
 //    kapt 'com.android.databinding:compiler:3.1.4'
 //    implementation 'com.squareup.moshi:moshi-kotlin:1.9.2'
 //    implementation 'com.squareup.moshi:moshi-kotlin-codegen:1.9.2'

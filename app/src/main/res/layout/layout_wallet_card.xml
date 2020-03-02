@@ -44,10 +44,29 @@
             android:layout_marginStart="4dp"
             android:fontFamily="sans-serif-medium"
             android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/coin_image"
             app:layout_constraintTop_toBottomOf="@+id/coin_name"
             tools:text="1234567.89" />
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            app:layout_constraintStart_toStartOf="@+id/amount_text"
+            app:layout_constraintTop_toBottomOf="@+id/amount_text"
+            tools:text="Address" />
+
+        <TextView
+            android:id="@+id/timeUpdated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="TimeUpdated" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
