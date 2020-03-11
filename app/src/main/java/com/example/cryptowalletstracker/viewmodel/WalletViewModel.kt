@@ -2,12 +2,15 @@
  * Copyright (c) 2020 by Jason McKinney.
  */
 
-package com.example.cryptowalletstracker.ui
+package com.example.cryptowalletstracker.viewmodel
 
+import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cryptowalletstracker.db.WalletDatabase
+import com.example.cryptowalletstracker.db.WalletRepository
+import com.example.cryptowalletstracker.db.dao.WalletDao
 import com.example.cryptowalletstracker.db.entities.Wallet
 import com.example.cryptowalletstracker.network.WalletOps
 import kotlinx.coroutines.Dispatchers
@@ -15,13 +18,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class WalletViewModel : ViewModel() {
+class WalletViewModel(application: Application) : ViewModel() {
     var wallets = MutableLiveData<Array<Wallet>>()
     private var allWallets: Array<Wallet>? = null
+    private lateinit var repository: WalletRepository
+    private lateinit var walletDao: WalletDao
 
 
     init {
-        wallets.value = emptyArray()
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                walletDao = WalletDatabase.getInstance(application)!!.walletDao()
+                repository = WalletRepository(walletDao)
+            }
+            wallets.value = repository.allWallets
+        }
     }
 
     fun addWallet(walletDatabase: WalletDatabase?) {

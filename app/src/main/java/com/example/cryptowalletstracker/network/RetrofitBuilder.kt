@@ -1,7 +1,7 @@
 package com.example.cryptowalletstracker.network
 
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 class RetrofitBuilder {
 
@@ -9,7 +9,7 @@ class RetrofitBuilder {
     {
         return Retrofit.Builder()
             .baseUrl(baseURL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create())
             .build().create(WalletService::class.java)
     }
 }

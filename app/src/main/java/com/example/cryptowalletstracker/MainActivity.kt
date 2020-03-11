@@ -13,7 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cryptowalletstracker.db.WalletDatabase
 import com.example.cryptowalletstracker.ui.CustomAdapter
-import com.example.cryptowalletstracker.ui.WalletViewModel
+import com.example.cryptowalletstracker.viewmodel.WalletViewModel
+import com.example.cryptowalletstracker.viewmodel.factory.WalletViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -36,7 +37,10 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         createDbInstance()
-        viewModel = ViewModelProvider(this)[WalletViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            WalletViewModelFactory(application)
+        ).get(WalletViewModel::class.java)
 
         viewModel.wallets.observe(this, Observer {
             adapter?.wallets = it
@@ -66,7 +70,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createDbInstance() {
-        walletDatabase = WalletDatabase.getInstance(this)
+        walletDatabase = WalletDatabase.getInstance(application)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
