@@ -19,8 +19,17 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class WalletViewModel(application: Application) : ViewModel() {
-    var wallets = MutableLiveData<Array<Wallet>>()
-    private var allWallets: Array<Wallet>? = null
+
+    val state = MutableLiveData<AppState>()
+
+    sealed class AppState {
+        object LOADING : AppState()
+        data class SUCCESS(val walletArray: List<Wallet>) : AppState()
+        data class ERROR(val message: String) : AppState()
+    }
+
+    private lateinit var wallets: List<Wallet>
+    private var allWallets: List<Wallet>? = null
     private lateinit var repository: WalletRepository
     private lateinit var walletDao: WalletDao
 
@@ -31,11 +40,12 @@ class WalletViewModel(application: Application) : ViewModel() {
                 walletDao = WalletDatabase.getInstance(application)!!.walletDao()
                 repository = WalletRepository(walletDao)
             }
-            wallets.value = repository.allWallets
+            wallets = repository.allWallets
         }
     }
 
     fun addWallet(walletDatabase: WalletDatabase?) {
+        state.value = AppState.LOADING
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 val payload =
@@ -43,40 +53,45 @@ class WalletViewModel(application: Application) : ViewModel() {
                 Timber.d("CoroutineScope: $payload")
                 var wallet = Wallet()
                 wallet = wallet.getWalletFromBalance(payload)
-                walletDatabase?.walletDao()?.insertWallets(wallet)
-                allWallets = walletDatabase?.walletDao()?.getAllWallets()
+                repository.insertWallet(wallet)
+//                walletDatabase?.walletDao()?.insertWallets(wallet)
+                allWallets = repository.allWallets
             }
-            wallets.value = allWallets
-        }
-    }
-
-    fun initViewModel(walletDatabase: WalletDatabase?) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                allWallets = walletDatabase?.walletDao()?.getAllWallets()
-            }
-            wallets.value = allWallets
+            wallets = allWallets ?: listOf()
+            state.value = AppState.SUCCESS(wallets)
         }
     }
 
     fun refreshWallets(walletDatabase: WalletDatabase?) {
+        state.value = AppState.LOADING
         viewModelScope.launch {
-            val walletArray = wallets.value
-            if (walletArray != null)
-                for (i in walletArray.indices) {
-                    wallets.value =
-                        withContext(Dispatchers.IO) { updateWallet(walletDatabase, walletArray[i]) }
-                }
+            val walletArray = wallets
+            for (i in walletArray.indices) {
+                wallets =
+                    withContext(Dispatchers.IO) { updateWallet(walletDatabase, walletArray[i]) }
+            }
+            state.value = AppState.SUCCESS(wallets)
         }
     }
 
 
-    suspend fun updateWallet(walletDatabase: WalletDatabase?, input: Wallet): Array<Wallet>? {
+    suspend fun updateWallet(walletDatabase: WalletDatabase?, input: Wallet): List<Wallet> {
         val payload =
             WalletOps().retrieveBalance(input.coin, input.address)
         var wallet = Wallet()
         wallet = wallet.getWalletFromBalance(payload)
-        walletDatabase?.walletDao()?.insertWallets(wallet)
-        return walletDatabase?.walletDao()?.getAllWallets()
+        repository.insertWallet(wallet)
+        return repository.allWallets
+    }
+
+    fun initViewModel(walletDatabase: WalletDatabase?) {
+        viewModelScope.launch {
+            state.value = AppState.LOADING
+            withContext(Dispatchers.IO) {
+                allWallets = walletDatabase?.walletDao()?.getAllWallets()
+            }
+            wallets = allWallets ?: listOf()
+            state.value = AppState.SUCCESS(wallets)
+        }
     }
 }

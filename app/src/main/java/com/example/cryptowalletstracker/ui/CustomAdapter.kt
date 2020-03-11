@@ -20,7 +20,7 @@ import java.util.*
 
 class CustomAdapter(context: Context) : RecyclerView.Adapter<CustomAdapter.CustomViewHolder>() {
 
-    var wallets: Array<Wallet> = emptyArray()
+    var wallets: List<Wallet> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()

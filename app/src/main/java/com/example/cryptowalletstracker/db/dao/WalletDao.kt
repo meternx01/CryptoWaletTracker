@@ -11,7 +11,7 @@ import com.example.cryptowalletstracker.db.entities.Wallet
 interface WalletDao {
     //"SELECT * FROM walletTable"
     @Query("SELECT * FROM walletTable")
-    fun getAllWallets(): Array<Wallet>
+    fun getAllWallets(): List<Wallet>
 
     @Insert(onConflict = REPLACE)
     fun insertWallets(wallets: Wallet): Long
