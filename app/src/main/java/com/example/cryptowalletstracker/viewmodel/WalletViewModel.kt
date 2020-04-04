@@ -16,6 +16,7 @@ import com.example.cryptowalletstracker.network.WalletOps
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import timber.log.Timber
 
 class WalletViewModel(application: Application) : ViewModel() {
@@ -23,6 +24,7 @@ class WalletViewModel(application: Application) : ViewModel() {
     private var allWallets: Array<Wallet>? = null
     private lateinit var repository: WalletRepository
     private lateinit var walletDao: WalletDao
+    var status = MutableLiveData<String?>()
 
 
     init {
@@ -32,19 +34,30 @@ class WalletViewModel(application: Application) : ViewModel() {
                 repository = WalletRepository(walletDao)
             }
             wallets.value = repository.allWallets
+            status.value = null
         }
     }
 
-    fun addWallet(walletDatabase: WalletDatabase?) {
+    fun addWallet(walletDatabase: WalletDatabase?, coin: String, address: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val payload =
-                    WalletOps().retrieveBalance("doge", "DPdHJchjuYNxvEi2vhv2XLtKRzNKADq3zc")
-                Timber.d("CoroutineScope: $payload")
-                var wallet = Wallet()
-                wallet = wallet.getWalletFromBalance(payload)
-                walletDatabase?.walletDao()?.insertWallets(wallet)
-                allWallets = walletDatabase?.walletDao()?.getAllWallets()
+                try {
+                    val payload =
+                        WalletOps().retrieveBalance(coin, address)
+                    //WalletOps()
+                    Timber.d("CoroutineScope: $payload")
+                    var wallet = Wallet()
+                    wallet = wallet.getWalletFromBalance(payload)
+                    walletDatabase?.walletDao()?.insertWallets(wallet)
+                    allWallets = walletDatabase?.walletDao()?.getAllWallets()
+                    status.value = null
+                } catch (e: HttpException) {
+                    // Toast with error message
+                    withContext(Dispatchers.Main) { status.value = "Error: ${e.message()}" }
+                } catch (ex: Exception) {
+                    // Toast Offline/ Retrofit error
+                    withContext(Dispatchers.Main) { status.value = "Check Your Network Connection" }
+                }
             }
             wallets.value = allWallets
         }
@@ -61,17 +74,32 @@ class WalletViewModel(application: Application) : ViewModel() {
 
     fun refreshWallets(walletDatabase: WalletDatabase?) {
         viewModelScope.launch {
-            val walletArray = wallets.value
-            if (walletArray != null)
+            try {
+                val walletArray = repository.allWallets
                 for (i in walletArray.indices) {
                     wallets.value =
-                        withContext(Dispatchers.IO) { updateWallet(walletDatabase, walletArray[i]) }
+                        withContext(Dispatchers.IO) {
+                            updateWallet(
+                                walletDatabase,
+                                walletArray[i]
+                            )
+                        }
                 }
+            } catch (e: HttpException) {
+                // Toast with error message
+                status.value = "Error: ${e.message()}"
+            } catch (ex: Exception) {
+                // Toast Offline/ Retrofit error
+                status.value = "Check Your Network Connection"
+            }
         }
     }
 
 
-    suspend fun updateWallet(walletDatabase: WalletDatabase?, input: Wallet): Array<Wallet>? {
+    private suspend fun updateWallet(
+        walletDatabase: WalletDatabase?,
+        input: Wallet
+    ): Array<Wallet>? {
         val payload =
             WalletOps().retrieveBalance(input.coin, input.address)
         var wallet = Wallet()

@@ -7,18 +7,21 @@ package com.example.cryptowalletstracker
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cryptowalletstracker.db.WalletDatabase
+import com.example.cryptowalletstracker.ui.AddCoinDialogFragment
 import com.example.cryptowalletstracker.ui.CustomAdapter
 import com.example.cryptowalletstracker.viewmodel.WalletViewModel
 import com.example.cryptowalletstracker.viewmodel.factory.WalletViewModelFactory
+import com.idescout.sql.SqlScoutServer
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AddCoinDialogFragment.AddWalletDialogListener {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     var adapter: CustomAdapter? = null
@@ -29,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        SqlScoutServer.create(this, packageName)
 
         linearLayoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = linearLayoutManager
@@ -42,6 +46,13 @@ class MainActivity : AppCompatActivity() {
             WalletViewModelFactory(application)
         ).get(WalletViewModel::class.java)
 
+        viewModel.status.observe(this, Observer { status ->
+            status?.let {
+                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+                viewModel.status.value = null
+            }
+        })
+
         viewModel.wallets.observe(this, Observer {
             adapter?.wallets = it
         })
@@ -49,12 +60,17 @@ class MainActivity : AppCompatActivity() {
 
         fab.setOnClickListener {
             if (walletDatabase != null) {
+                /*
                 val database = walletDatabase
-                viewModel.addWallet(database)
+                viewModel.addWallet(database,"doge","DPdHJchjuYNxvEi2vhv2XLtKRzNKADq3zc")
+                */
+                val newFragment = AddCoinDialogFragment()
+                newFragment.show(supportFragmentManager, "addcoins")
             }
         }
 
         swiperefresh.setOnRefreshListener {
+            swiperefresh.isRefreshing = true
             viewModel.refreshWallets(walletDatabase)
             swiperefresh.isRefreshing = false
         }
@@ -94,6 +110,10 @@ class MainActivity : AppCompatActivity() {
     private fun refreshWallets(): Boolean {
         viewModel.refreshWallets(walletDatabase)
         return true
+    }
+
+    override fun onFinishedAddWallet(coin: String, address: String) {
+        viewModel.addWallet(walletDatabase, coin, address)
     }
 
 
