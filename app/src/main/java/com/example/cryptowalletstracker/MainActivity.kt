@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     var adapter: CustomAdapter? = null
     lateinit var viewModel: WalletViewModel
-    private var walletDatabase: WalletDatabase? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,39 +35,32 @@ class MainActivity : AppCompatActivity() {
         adapter = CustomAdapter(this)
         recyclerView.adapter = adapter
 
-        createDbInstance()
+
         viewModel = ViewModelProvider(this)[WalletViewModel::class.java]
 
         viewModel.wallets.observe(this, Observer {
             adapter?.wallets = it
         })
-        viewModel.initViewModel(walletDatabase)
+        viewModel.initViewModel()
 
         fab.setOnClickListener {
-            if (walletDatabase != null) {
-                val database = walletDatabase
-                viewModel.addWallet(database)
-            }
+            viewModel.addWallet("doge", "DPdHJchjuYNxvEi2vhv2XLtKRzNKADq3zc")
         }
 
         swiperefresh.setOnRefreshListener {
-            viewModel.refreshWallets(walletDatabase)
+            viewModel.refreshWallets()
             swiperefresh.isRefreshing = false
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        destroyDbInstance()
-    }
-
-    private fun destroyDbInstance() {
-        WalletDatabase.destroyInstance()
-    }
-
-    private fun createDbInstance() {
-        walletDatabase = WalletDatabase.getInstance(this)
-    }
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        destroyDbInstance()
+//    }
+//
+//    private fun destroyDbInstance() {
+//        WalletDatabase.destroyInstance()
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -88,7 +81,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun refreshWallets(): Boolean {
-        viewModel.refreshWallets(walletDatabase)
+        viewModel.refreshWallets()
         return true
     }
 
