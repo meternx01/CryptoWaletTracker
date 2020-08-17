@@ -20,9 +20,8 @@ import kotlinx.android.synthetic.main.content_main.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
-    var adapter: CustomAdapter? = null
-    lateinit var viewModel: WalletViewModel
-
+    private var adapter: CustomAdapter? = null
+    private lateinit var viewModel: WalletViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +35,6 @@ class MainActivity : AppCompatActivity() {
         adapter = CustomAdapter(this)
         recyclerView.adapter = adapter
 
-
         viewModel = ViewModelProvider(this)[WalletViewModel::class.java]
 
         viewModel.wallets.observe(this, Observer {
@@ -49,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         swiperefresh.setOnRefreshListener {
+            swiperefresh.isRefreshing = true
             viewModel.refreshWallets()
             swiperefresh.isRefreshing = false
         }
