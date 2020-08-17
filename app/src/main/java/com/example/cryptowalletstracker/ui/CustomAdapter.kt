@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptowalletstracker.R
 import com.example.cryptowalletstracker.db.entities.Wallet
+import com.example.cryptowalletstracker.util.DataSources.Companion.COINS
 import kotlinx.android.synthetic.main.layout_wallet_card.view.*
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -57,7 +58,15 @@ class CustomAdapter(context: Context) : RecyclerView.Adapter<CustomAdapter.Custo
         private val timeUpdated = view.timeUpdated
 
         fun bind(wallet: Wallet) {
-            when (wallet.coin) {
+
+            for (i in 0 until COINS.size) {
+                if (wallet.coin == COINS[i].symbol) {
+                    coinLogo.setImageResource(COINS[i].image)
+                    coinLogo.contentDescription = "${COINS[i].name} Icon"
+                    coinName.text = COINS[i].name
+                }
+            }
+            /*when (wallet.coin) {
                 "doge" -> {
                     coinLogo.setImageResource(R.drawable.ic_doge)
                     coinLogo.contentDescription = "Dogecoin Icon"
@@ -71,7 +80,7 @@ class CustomAdapter(context: Context) : RecyclerView.Adapter<CustomAdapter.Custo
                 else -> {
 
                 }
-            }
+            }*/
             amount.text = DecimalFormat("#,##0.################").format(wallet.amount)
             timeUpdated.text =
                 SimpleDateFormat(

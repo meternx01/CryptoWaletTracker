@@ -25,7 +25,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        debug{
+        debug {
             debuggable true
             buildConfigField "String", "API_KEY", localProperties['cryptoapis.key']
         }

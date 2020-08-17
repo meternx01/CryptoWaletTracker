@@ -11,4 +11,7 @@
     <string name="dogecoin">Dogecoin</string>
     <string name="bitcoin">Bitcoin</string>
     <string name="action_refresh">Refresh</string>
+    <string name="coin">Coin</string>
+    <string name="hint">0x....</string>
+    <string name="add">Add</string>
 </resources>
