@@ -20,9 +20,8 @@ import kotlinx.android.synthetic.main.content_main.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
-    var adapter: CustomAdapter? = null
-    lateinit var viewModel: WalletViewModel
-    private var walletDatabase: WalletDatabase? = null
+    private var adapter: CustomAdapter? = null
+    private lateinit var viewModel: WalletViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
