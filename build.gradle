@@ -14,6 +14,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.netflix.nebula:gradle-lint-plugin:16.9.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -23,10 +24,16 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+        maven {
+            url 'http://www.idescout.com/maven/repo/'
+            name 'IDEScout, Inc.'
+        }
+
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+apply plugin: 'nebula.lint'
+gradleLint.rules += 'unused-dependency'
