@@ -58,7 +58,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-//    implementation 'com.squareup.retrofit2:adapter-rxjava:2.7.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
@@ -73,7 +72,4 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01'
     releaseImplementation 'com.idescout.sql:sqlscout-server-noop:4.1'
-//    kapt 'com.android.databinding:compiler:3.1.4'
-//    implementation 'com.squareup.moshi:moshi-kotlin:1.9.2'
-//    implementation 'com.squareup.moshi:moshi-kotlin-codegen:1.9.2'
 }
